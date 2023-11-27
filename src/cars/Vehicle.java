@@ -3,7 +3,7 @@ package cars;
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-public abstract class Vehicle {
+public abstract class Vehicle implements Movable {
     private static final double TIME_INTERVAL_LENGTH = 0.5;
     private static final double ENGINE_POWER_RESCALE_AMOUNT = 0.01;
 
@@ -24,7 +24,7 @@ public abstract class Vehicle {
         this.color = color;
         this.modelName = modelName;
         this.position = new Point2D.Double();
-        this.direction = Direction.NORTH;
+        this.direction = Direction.EAST;
         canDrive = true;
 
         stopEngine();
@@ -85,20 +85,12 @@ public abstract class Vehicle {
 
     protected abstract double speedFactor();
 
-    protected double integrateAcceleration(double amount) {
-        return getCurrentSpeed() + speedFactor() * amount;
-    }
-
-    protected double integrateDeceleration(double amount) {
-        return getCurrentSpeed() - speedFactor() * amount;
-    }
-
     protected void incrementSpeed(double amount) {
-        currentSpeed = Math.min(integrateAcceleration(amount), enginePower);
+        currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount, enginePower);
     }
 
     protected void decrementSpeed(double amount) {
-        currentSpeed = Math.max(integrateDeceleration(amount), 0);
+        currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount, 0);
     }
 
     protected void checkAmountArg(double amount) {
@@ -118,19 +110,18 @@ public abstract class Vehicle {
 
     public void move() {
         if (!canDrive) throw new IllegalArgumentException("Cannot move");
-        double displacement = currentSpeed * TIME_INTERVAL_LENGTH;
         switch (direction) {
             case NORTH:
-                position.y += displacement;
+                position.y += currentSpeed;
                 break;
             case EAST:
-                position.x += displacement;
+                position.x += currentSpeed;
                 break;
             case SOUTH:
-                position.y -= displacement;
+                position.y -= currentSpeed;
                 break;
             case WEST:
-                position.x -= displacement;
+                position.x -= currentSpeed;
                 break;
         }
     }

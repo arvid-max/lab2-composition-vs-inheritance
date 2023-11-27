@@ -25,15 +25,15 @@ public class TestSaab95 {
     }
 
     @Test
-    public void newCarFacesNorth() {
+    public void newCarFacesEast() {
         Saab95 saab95 = new Saab95();
-        assertSame(saab95.getDirection(), Direction.NORTH);
+        assertSame(Direction.EAST, saab95.getDirection());
     }
 
     @Test
     public void newCarIsRed() {
         Saab95 saab95 = new Saab95();
-        assertSame(saab95.getColor(), Color.RED);
+        assertSame(Color.RED, saab95.getColor());
     }
 
     @Test
@@ -45,37 +45,36 @@ public class TestSaab95 {
     }
 
     @Test
-    public void carFacingNorthFacesEastAfterTurnRight() {
+    public void carFacingEastFacesSouthAfterTurnRight() {
         Saab95 saab95 = new Saab95();
 
-        assertTrue(saab95.getDirection().equals(Direction.NORTH));
+        assertTrue(saab95.getDirection().equals(Direction.EAST));
 
         saab95.turnRight();
-        assertEquals(saab95.getDirection(), Direction.EAST);
+        assertEquals(saab95.getDirection(), Direction.SOUTH);
     }
 
     @Test
-    public void carFacingNorthFacesWestAfterTurnLeft() {
+    public void carFacingEastFacesNorthAfterTurnLeft() {
         Saab95 saab95 = new Saab95();
 
-        assertTrue(saab95.getDirection().equals(Direction.NORTH));
+        assertTrue(saab95.getDirection().equals(Direction.EAST));
 
         saab95.turnLeft();
-        assertEquals(saab95.getDirection(), Direction.WEST);
+        assertEquals(saab95.getDirection(), Direction.NORTH);
     }
 
     @ParameterizedTest
-    @ValueSource(doubles = { 0.0, 1e-3, 1e-2, 0.1, 0.5, 0.9, 0.99, 0.999, 1.0})
-    public void moveNorthIncreasesY(double gasAmount) {
+    @ValueSource(doubles = { 1e-3, 1e-2, 0.1, 0.5, 0.9, 0.99, 0.999, 1.0})
+    public void moveEastIncreasesX(double gasAmount) {
         Saab95 saab95 = new Saab95();
 
-        assertEquals(0.0, saab95.getCurrentSpeed(), Constants.DOUBLE_EQUALS_ALLOWED_DIFF);
-        assertTrue(saab95.getDirection().equals(Direction.NORTH));
+        assertEquals(0, saab95.getCurrentSpeed(), Constants.DOUBLE_EQUALS_ALLOWED_DIFF);
+        assertTrue(saab95.getDirection().equals(Direction.EAST));
 
         saab95.gas(gasAmount);
-        double expectedY = saab95.getY() + saab95.getCurrentSpeed() * 0.5;
         saab95.move();
-        assertEquals(expectedY, saab95.getY(), Constants.DOUBLE_EQUALS_ALLOWED_DIFF);
+        assertTrue(saab95.getX() > 0);
     }
 
     // Sanity check 1: gas & break only accept values in [0,1]

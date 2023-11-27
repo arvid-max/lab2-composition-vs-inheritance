@@ -13,7 +13,6 @@ public abstract class CarTransport extends Truck implements Loadable<Car> {
     }
     public ArrayList<Car> getLoadedCars() { return loadedCars; }
     public int getCarCapacity() { return carCapacity; }
-
     public void loadCar(Car car) {
         // tests if loading is possible
         if (loadedCars.size() == carCapacity) throw new IllegalArgumentException("Exceeds car limit");
@@ -36,7 +35,6 @@ public abstract class CarTransport extends Truck implements Loadable<Car> {
         loadedCars.remove(car);
         car.setPosition(getX(), getY());
     }
-
     @Override
     public void move() {
         super.move();
@@ -44,12 +42,10 @@ public abstract class CarTransport extends Truck implements Loadable<Car> {
             c.setPosition(getX(), getY());
         }
     }
-
     @Override
     public void raiseRamp(double angle) {
         super.raiseRamp(maxAngle);
     }
-
     @Override
     public void lowerRamp(double angle) {
         super.lowerRamp(maxAngle);
