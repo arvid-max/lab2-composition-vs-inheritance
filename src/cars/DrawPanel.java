@@ -11,22 +11,17 @@ import javax.swing.*;
 
 public class DrawPanel extends JPanel{
     private class VehicleRepresentation {
-        Point position;
-        BufferedImage image;
-        VehicleRepresentation(BufferedImage image) {
-            this.position = new Point();
-            this.image = image;
+        int posX;
+        int posY;
+        int image_index;
+        private VehicleRepresentation(int posX, int posY, int image_index) {
+            this.posX = posX;
+            this.posY = posY;
+            this.image_index = image_index;
         }
     }
-    ArrayList<VehicleRepresentation> vehicleRepresentations;
-    ArrayList<BufferedImage> images;
-    void addVehicleRepresentation(BufferedImage image) {
-        vehicleRepresentations.add(new VehicleRepresentation(image));
-    }
-    void moveit(int x, int y, int index) {
-        vehicleRepresentations.get(index).position.x = x;
-        vehicleRepresentations.get(index).position.y = y;
-    }
+    private ArrayList<VehicleRepresentation> vehicleRepresentations;
+    private ArrayList<BufferedImage> images;
 
     // Initializes the panel and reads the images
     public DrawPanel(int x, int y) {
@@ -38,34 +33,33 @@ public class DrawPanel extends JPanel{
         vehicleRepresentations = new ArrayList<>();
         // Print an error message in case file is not found with a try/catch block
         try {
-            // You can remove the "pics" part if running outside of IntelliJ and
-            // everything is in the same main folder.
-            // volvoImage = ImageIO.read(new File("Volvo240.jpg"));
-
-            // Rememember to rightclick src New -> Package -> name: pics -> MOVE *.jpg to pics.
-            // if you are starting in IntelliJ.
             images.add(ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Volvo240.jpg")));
             images.add(ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Saab95.jpg")));
             images.add(ImageIO.read(DrawPanel.class.getResourceAsStream("pics/Scania.jpg")));
-            addVehicleRepresentation(images.get(0));
-            addVehicleRepresentation(images.get(1));
-            addVehicleRepresentation(images.get(2));
-
-        } catch (IOException ex)
-        {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
 
     }
 
+    public int addVehicleRepresentation(int x, int y, int index) {
+        vehicleRepresentations.add(new VehicleRepresentation(x, y, index));
+        return vehicleRepresentations.size() - 1;
+    }
+
+    public void moveit(int x, int y, int index) {
+        vehicleRepresentations.get(index).posX = x;
+        vehicleRepresentations.get(index).posY = y;
+    }
+
     // This method is called each time the panel updates/refreshes/repaints itself
-    // TODO: Change to suit your needs.
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         for(VehicleRepresentation vehicleRepresentation : vehicleRepresentations) {
             // see javadoc for more info on the parameters
-            g.drawImage(vehicleRepresentation.image, vehicleRepresentation.position.x, vehicleRepresentation.position.y, null);
+            g.drawImage(images.get(vehicleRepresentation.image_index),
+                    vehicleRepresentation.posX, vehicleRepresentation.posY, null);
         }
     }
 }
