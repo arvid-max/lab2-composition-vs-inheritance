@@ -9,17 +9,8 @@ import javax.swing.*;
 
 // This panel represent the animated part of the view with the car images.
 
-public class DrawPanel extends JPanel{
-    private class VehicleRepresentation {
-        int posX;
-        int posY;
-        int image_index;
-        private VehicleRepresentation(int posX, int posY, int image_index) {
-            this.posX = posX;
-            this.posY = posY;
-            this.image_index = image_index;
-        }
-    }
+public class DrawPanel extends JPanel implements Observer {
+
     private ArrayList<VehicleRepresentation> vehicleRepresentations;
     private ArrayList<BufferedImage> images;
 
@@ -42,14 +33,14 @@ public class DrawPanel extends JPanel{
 
     }
 
-    public int addVehicleRepresentation(int x, int y, int index) {
-        vehicleRepresentations.add(new VehicleRepresentation(x, y, index));
+    // Returns the id of the newly created VehicleRepresentation
+    public int addVehicleRepresentation(int x, int y, int imageIndex) {
+        vehicleRepresentations.add(new VehicleRepresentation(x, y, imageIndex));
         return vehicleRepresentations.size() - 1;
     }
 
-    public void moveit(int x, int y, int index) {
-        vehicleRepresentations.get(index).posX = x;
-        vehicleRepresentations.get(index).posY = y;
+    public void notify(int id, int x, int y) {
+        vehicleRepresentations.get(id).setPosition(x, y);
     }
 
     // This method is called each time the panel updates/refreshes/repaints itself
@@ -58,8 +49,8 @@ public class DrawPanel extends JPanel{
         super.paintComponent(g);
         for(VehicleRepresentation vehicleRepresentation : vehicleRepresentations) {
             // see javadoc for more info on the parameters
-            g.drawImage(images.get(vehicleRepresentation.image_index),
-                    vehicleRepresentation.posX, vehicleRepresentation.posY, null);
+            g.drawImage(images.get(vehicleRepresentation.getImageIndex()),
+                    vehicleRepresentation.getX(), vehicleRepresentation.getY(), null);
         }
     }
 }
