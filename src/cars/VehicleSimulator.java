@@ -1,8 +1,10 @@
 package cars;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class VehicleSimulator {
 
@@ -13,44 +15,40 @@ public class VehicleSimulator {
     private Timer timer = new Timer(delay, new TimerListener());
 
     // The frame that represents this instance View of the MVC pattern
-    private VehicleGroup vg;
-    private VehicleView frame;
-    private DrawPanel panel;
+    private VehicleGroup vehicleGroup;
+    private VehicleSimulatorController simulatorController;
+    private VehicleSimulatorView simulatorView;
 
     /* Each step the TimerListener moves all the cars in the list and tells the
      * view to update its images. Change this method to your needs.
      * */
     private class TimerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            vg.update();
+            vehicleGroup.update();
             // repaint() calls the paintComponent method of the panel
-            panel.repaint();
+            simulatorView.repaint();
         }
     }
 
     public VehicleSimulator() {
-        // Instance of this class
-        vg = new VehicleGroup();
-        panel = new DrawPanel(VehicleView.X, VehicleView.Y - 240);
-        vg.addObserver(panel);
+        vehicleGroup = new VehicleGroup();
+        simulatorView = new VehicleSimulatorView(SimulatorWindow.WIDTH, SimulatorWindow.HEIGHT - 240);
+        vehicleGroup.addObserver(simulatorView);
+        simulatorController = new VehicleSimulatorController(vehicleGroup, SimulatorWindow.WIDTH);
 
-        // original
-        vg.addVehicle(new Volvo240());
-        panel.addVehicleRepresentation(0, 0, 0);
+        VehicleFactory factory = new VehicleFactory();
+        ArrayList<String> names = factory.getPossibleVehiclesNames();
+        for(String name : names) {
+            System.out.println("pics/" + name + ".jpg");
+            simulatorView.loadImage(name, "pics/" + name + ".jpg");
+        }
 
-        Saab95 saab95 = new Saab95();
-        saab95.setPosition(0, 100);
-        vg.addVehicle(saab95);
-        panel.addVehicleRepresentation(0, 0, 1);
-
-        Scania scania = new Scania();
-        scania.setPosition(0, 200);
-        vg.addVehicle(scania);
-        panel.addVehicleRepresentation(0, 0, 2);
-
+        vehicleGroup.addVehicle(factory.createVolvo(0, 0));
+        vehicleGroup.addVehicle(factory.createSaab(0, 100));
+        vehicleGroup.addVehicle(factory.createScania(0, 200));
 
         // Start a new view and send a reference of self
-        frame = new VehicleView("VehicleSim 1.0", panel, vg);
+        new SimulatorWindow("VehicleSim 1.0", simulatorView, simulatorController);
 
         // Start the timer
         timer.start();

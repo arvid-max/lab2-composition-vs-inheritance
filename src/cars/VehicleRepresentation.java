@@ -4,11 +4,11 @@ import java.awt.*;
 
 public class VehicleRepresentation {
     private Point pos;
-    private int imageIndex;
+    private String imageName;
 
-    public VehicleRepresentation(int posX, int posY, int imageIndex) {
+    public VehicleRepresentation(int posX, int posY, String imageName) {
         this.pos = new Point(posX, posY);
-        this.imageIndex = imageIndex;
+        this.imageName = imageName;
     }
 
     public int getX() {
@@ -21,7 +21,10 @@ public class VehicleRepresentation {
     public void setPosition(int x, int y) {
         pos = new Point(x, y);
     }
-    public int getImageIndex() {
-        return imageIndex;
+    public String getImageName() {
+        return imageName;
+    }
+    public String toString() {
+        return "pos: " + pos.getX() + ", " + pos.getY() + " imageName: " + imageName;
     }
 }

@@ -15,51 +15,39 @@ import java.awt.event.ActionListener;
  * TODO: Write more actionListeners and wire the rest of the buttons
  **/
 
-public class VehicleView extends JFrame{
-    public static final int X = 800;
-    public static final int Y = 800;
+public class VehicleSimulatorController extends JPanel {
+    private JPanel controlPanel = new JPanel();
+    private JPanel gasPanel = new JPanel();
+    private JSpinner gasSpinner = new JSpinner();
+    private int gasAmount = 0;
+    private JLabel gasLabel = new JLabel("Amount of gas");
 
-    // The controller member
-    JPanel drawPanel;
+    private JButton gasButton = new JButton("Gas");
+    private JButton brakeButton = new JButton("Brake");
+    private JButton turboOnButton = new JButton("Saab Turbo on");
+    private JButton turboOffButton = new JButton("Saab Turbo off");
+    private JButton liftBedButton = new JButton("Scania Lift Bed");
+    private JButton lowerBedButton = new JButton("Lower Lift Bed");
 
-    JPanel controlPanel = new JPanel();
+    private JButton startButton = new JButton("Start all cars");
+    private JButton stopButton = new JButton("Stop all cars");
+    private JButton addVehicleButton = new JButton("Add vehicle");
+    private JButton removeVehicleButton = new JButton("Remove vehicle");
 
-    JPanel gasPanel = new JPanel();
-    JSpinner gasSpinner = new JSpinner();
-    int gasAmount = 0;
-    JLabel gasLabel = new JLabel("Amount of gas");
-
-    JButton gasButton = new JButton("Gas");
-    JButton brakeButton = new JButton("Brake");
-    JButton turboOnButton = new JButton("Saab Turbo on");
-    JButton turboOffButton = new JButton("Saab Turbo off");
-    JButton liftBedButton = new JButton("Scania Lift Bed");
-    JButton lowerBedButton = new JButton("Lower Lift Bed");
-
-    JButton startButton = new JButton("Start all cars");
-    JButton stopButton = new JButton("Stop all cars");
 
     // Constructor
-    public VehicleView(String framename, JPanel panel, Controllable controller){
-        this.drawPanel = panel;
-        initComponents(framename, controller);
+    public VehicleSimulatorController(Controllable controller, int parentWidth){
+        initComponents(controller, parentWidth);
     }
 
     // Sets everything in place and fits everything
     // TODO: Take a good look and make sure you understand how these methods and components work
-    private void initComponents(String title, Controllable controller) {
-
-        this.setTitle(title);
-        this.setPreferredSize(new Dimension(X,Y));
-        this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-        this.add(drawPanel);
-
+    private void initComponents(Controllable controller, int parentWidth) {
         SpinnerModel spinnerModel =
-                new SpinnerNumberModel(0, //initial value
-                        0, //min
-                        100, //max
-                        1);//step
+                new SpinnerNumberModel(0, // initial value
+                        0, // min
+                        100, // max
+                        1); // step
         gasSpinner = new JSpinner(spinnerModel);
         gasSpinner.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
@@ -73,7 +61,7 @@ public class VehicleView extends JFrame{
 
         this.add(gasPanel);
 
-        controlPanel.setLayout(new GridLayout(2,4));
+        controlPanel.setLayout(new GridLayout(2,6));
 
         controlPanel.add(gasButton, 0);
         controlPanel.add(turboOnButton, 1);
@@ -81,21 +69,34 @@ public class VehicleView extends JFrame{
         controlPanel.add(brakeButton, 3);
         controlPanel.add(turboOffButton, 4);
         controlPanel.add(lowerBedButton, 5);
-        controlPanel.setPreferredSize(new Dimension((X/2)+4, 200));
-        this.add(controlPanel);
+        controlPanel.add(addVehicleButton, 6);
+        controlPanel.add(removeVehicleButton, 7);
+
+        controlPanel.setPreferredSize(new Dimension((parentWidth/2)+4, 200));
         controlPanel.setBackground(Color.CYAN);
 
 
         startButton.setBackground(Color.blue);
         startButton.setForeground(Color.green);
-        startButton.setPreferredSize(new Dimension(X/5-15,200));
-        this.add(startButton);
-
+        startButton.setPreferredSize(new Dimension(parentWidth/5-15,200));
+        controlPanel.add(startButton);
 
         stopButton.setBackground(Color.red);
         stopButton.setForeground(Color.black);
-        stopButton.setPreferredSize(new Dimension(X/5-15,200));
-        this.add(stopButton);
+        stopButton.setPreferredSize(new Dimension(parentWidth/5-15,200));
+        controlPanel.add(stopButton);
+
+        addVehicleButton.setBackground(Color.yellow);
+        addVehicleButton.setForeground(Color.black);
+        //addVehicleButton.setPreferredSize(new Dimension(parentWidth/5-15,200));
+        controlPanel.add(addVehicleButton);
+
+        removeVehicleButton.setBackground(Color.orange);
+        removeVehicleButton.setForeground(Color.black);
+        //removeVehicleButton.setPreferredSize(new Dimension(parentWidth/5-15,200));
+        controlPanel.add(removeVehicleButton);
+
+        this.add(controlPanel);
 
         // This actionListener is for the gas button only
         // TODO: Create more for each component as necessary
@@ -154,16 +155,20 @@ public class VehicleView extends JFrame{
                 controller.stopAll();
             }
         });
-        // Make the frame pack all it's components by respecting the sizes if possible.
-        this.pack();
 
-        // Get the computer screen resolution
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        // Center the frame
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
-        // Make the frame visible
-        this.setVisible(true);
-        // Make sure the frame exits when "x" is pressed
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addVehicleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.addVehicle();
+            }
+        });
+
+        removeVehicleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.removeVehicle();
+            }
+        });
+
     }
 }

@@ -21,21 +21,53 @@ public class VehicleGroup implements Controllable {
         observers.remove(o);
     }
 
-    private void notifyObservers() {
+    private void notifyMovingToObservers() {
         for(int i = 0; i < vehicles.size(); i++) {
             Vehicle vehicle = vehicles.get(i);
             for(Observer o : observers) {
-                o.notify(i, (int) vehicle.getX(), (int) vehicle.getY());
+                o.notifyMove(i, (int) vehicle.getX(), (int) vehicle.getY());
             }
         }
     }
 
-    //methods:
+    private void notifyAddToObservers(String carName, double x, double y) {
+        for(Observer o : observers) {
+            o.notifyAdd(carName, (int)x, (int)y);
+        }
+    }
+
+    private void notifyRemoveToObservers() {
+        for(Observer o : observers) {
+            o.notifyRemove(vehicles.size());
+        }
+    }
+
+        //methods:
     public ArrayList<Vehicle> getVehicles() {
         return vehicles;
     }
-    public void addVehicle(Vehicle vehicle) { vehicles.add(vehicle); }
-    public void removeVehicle(Vehicle vehicle) { vehicles.remove(vehicle); }
+
+    public void addVehicle() {
+        if(vehicles.size() < 10) {
+            addVehicle(new VehicleFactory().createRandomVehicle());
+        }
+    }
+
+    public void removeVehicle() {
+        if(!vehicles.isEmpty()) {
+            removeVehicle(vehicles.get(vehicles.size() - 1));
+        }
+    }
+
+    public void addVehicle(Vehicle vehicle) {
+        vehicles.add(vehicle);
+        notifyAddToObservers(vehicle.getModelName(), vehicle.getX(), vehicle.getY());
+    }
+
+    public void removeVehicle(Vehicle vehicle) {
+        vehicles.remove(vehicle);
+        notifyRemoveToObservers();
+    }
 
 
     private boolean checkIfVehicleHitsWall(Vehicle vehicle){
@@ -62,7 +94,8 @@ public class VehicleGroup implements Controllable {
             vehicle.move();
             if (checkIfVehicleHitsWall(vehicle)) stopAndTurnVehicle(vehicle);
         }
-        notifyObservers();
+
+        notifyMovingToObservers();
     }
 
     // Calls the gas method for each vehicle once

@@ -10,7 +10,7 @@ public abstract class Vehicle implements Movable {
     private int nrDoors; // Number of doors on the car
     private double enginePower; // Engine power of the car
     private Color color; // Color of the car
-    public String modelName; // The car model name
+    private String modelName; // The car model name
 
     // State of motion
     private Point2D.Double position;
@@ -28,6 +28,10 @@ public abstract class Vehicle implements Movable {
         canDrive = true;
 
         stopEngine();
+    }
+
+    public String getModelName() {
+        return modelName;
     }
 
     public void setCanDrive(boolean b) {

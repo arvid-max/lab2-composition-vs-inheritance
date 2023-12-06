@@ -9,4 +9,6 @@ public interface Controllable {
     void setTurboOn();
     void raiseRamps();
     void lowerRamps();
+    void addVehicle();
+    void removeVehicle();
 }
