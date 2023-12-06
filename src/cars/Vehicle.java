@@ -71,7 +71,7 @@ public abstract class Vehicle implements Movable {
     }
 
     public void startEngine(){
-        if (!canDrive) throw new IllegalArgumentException("Cannot start engine");
+        if (!canDrive) return;
         currentSpeed = 0.1;
     }
 
@@ -99,7 +99,7 @@ public abstract class Vehicle implements Movable {
         }
     }
     public void gas(double amount){
-        if (!canDrive) throw new IllegalArgumentException("Cannot gas");
+        if (!canDrive) return;
         checkAmountArg(amount);
         incrementSpeed(amount);
     }
@@ -109,7 +109,7 @@ public abstract class Vehicle implements Movable {
     }
 
     public void move() {
-        if (!canDrive) throw new IllegalArgumentException("Cannot move");
+        if (!canDrive) return;
         switch (direction) {
             case NORTH:
                 position.y += currentSpeed;

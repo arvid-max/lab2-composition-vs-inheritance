@@ -29,9 +29,9 @@ public class TestMercedesActros {
     @Test
     public void CannotDriveWhileRampIsDown() {
         mercedesActros.lowerRamp(maxAngle);
-        assertThrows(IllegalArgumentException.class, () -> {
-            mercedesActros.gas(1);
-        });
+        double speedBefore = mercedesActros.getCurrentSpeed();
+        mercedesActros.gas(1);
+        assertEquals(speedBefore, mercedesActros.getCurrentSpeed());
     }
     @Test
     public void CannotLowerRampWhileDriving() {
@@ -130,8 +130,8 @@ public class TestMercedesActros {
         mercedesActros.lowerRamp(maxAngle);
         Volvo240 volvo240 = new Volvo240();
         mercedesActros.loadCar(volvo240);
-        assertThrows(IllegalArgumentException.class, () -> {
-            volvo240.gas(1);
-        });
+        double speedBefore = volvo240.getCurrentSpeed();
+        volvo240.gas(1);
+        assertEquals(speedBefore, volvo240.getCurrentSpeed());
     }
 }

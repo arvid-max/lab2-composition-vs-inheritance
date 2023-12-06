@@ -29,9 +29,9 @@ public class TestScania {
     public void CannotDriveWhileRampIsDown() {
         Scania scania = new Scania();
         scania.lowerRamp(70);
-        assertThrows(IllegalArgumentException.class, () -> {
-            scania.gas(1);
-        });
+        double speedBefore = scania.getCurrentSpeed();
+        scania.gas(1);
+        assertEquals(speedBefore, scania.getCurrentSpeed());
     }
     @Test
     public void CannotLowerRampWhileDriving() {
@@ -46,8 +46,8 @@ public class TestScania {
     public void StartEngineAfterLoweringRamp() {
         Scania scania = new Scania();
         scania.lowerRamp(30);
-        assertThrows(IllegalArgumentException.class, () -> {
-            scania.startEngine();
-        });
+        double speedBefore = scania.getCurrentSpeed();
+        scania.startEngine();
+        assertEquals(speedBefore, scania.getCurrentSpeed());
     }
 }
